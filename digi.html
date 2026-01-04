@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulasi Interaktif Proses Booting Komputer</title>
+
+    <style>
+        :root {
+            --primary: #0066cc;
+            --secondary: #004499;
+            --accent: #00a2ff;
+            --success: #00cc66;
+            --light: #f5f5f5;
+            --dark: #1a1a1a;
+            --gray: #666;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Consolas, monospace;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: var(--light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: rgba(0,0,0,.7);
+            padding: 1.5rem;
+            text-align: center;
+            border-bottom: 2px solid var(--accent);
+        }
+
+        header h1 {
+            color: var(--accent);
+            font-size: 2.2rem;
+        }
+
+        header p {
+            color: #ccc;
+            margin-top: .5rem;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            padding: 1.5rem;
+            flex: 1;
+        }
+
+        .steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+
+        .step {
+            text-align: center;
+            width: 25%;
+        }
+
+        .step-icon {
+            width: 35px;
+            height: 35px;
+            margin: auto;
+            border-radius: 50%;
+            background: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .step.active .step-icon {
+            background: var(--primary);
+        }
+
+        .step.completed .step-icon {
+            background: var(--success);
+        }
+
+        .simulation-area {
+            background: #0a0a1a;
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid #333;
+        }
+
+        .screen {
+            height: 450px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .bios, .post {
+            background: black;
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            text-align: left;
+        }
+
+        .progress {
+            width: 80%;
+            height: 18px;
+            background: #222;
+            margin: 20px auto;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: var(--primary);
+            transition: 1s;
+        }
+
+        .os {
+            background: linear-gradient(135deg,#1e3c72,#2a5298);
+            width: 100%;
+            height: 100%;
+            color: white;
+        }
+
+        .login {
+            background: linear-gradient(135deg,#0078d7,#005a9e);
+            width: 100%;
+            height: 100%;
+        }
+
+        .explanation {
+            background: rgba(0,0,0,.7);
+            padding: 1rem;
+            margin-top: 1rem;
+            border-left: 4px solid var(--accent);
+        }
+
+        .controls {
+            margin-top: 1rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        button {
+            padding: .7rem 1.4rem;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-success { background: var(--success); color: white; }
+        .btn-secondary { background: var(--gray); color: white; }
+
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.8);
+            border-top: 1px solid #333;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Simulasi Interaktif Proses Booting Komputer</h1>
+    <p>Pelajari tahapan kerja komputer dari menekan tombol power hingga siap digunakan</p>
+</header>
+
+<div class="container">
+
+    <div class="steps">
+        <div class="step" id="s1"><div class="step-icon">1</div>BIOS</div>
+        <div class="step" id="s2"><div class="step-icon">2</div>POST</div>
+        <div class="step" id="s3"><div class="step-icon">3</div>Loading OS</div>
+        <div class="step" id="s4"><div class="step-icon">4</div>Login</div>
+    </div>
+
+    <div class="simulation-area">
+
+        <div class="screen bios" id="bios">
+            <p>Sistem sedang menginisialisasi perangkat keras...</p>
+            <p> Mengecek prosesor, memori, dan media penyimpanan</p>
+            <div class="progress"><div class="progress-bar" id="biosBar"></div></div>
+            <p>Tekan F2 untuk masuk BIOS Setup</p>
+        </div>
+
+        <div class="screen post" id="post">
+            <p>Melakukan pemeriksaan komponen komputer</p>
+            <p> RAM, CPU, GPU, Storage terdeteksi dengan baik</p>
+        </div>
+
+        <div class="screen os" id="os">
+            <h1>Windows</h1>
+            <div class="progress"><div class="progress-bar" id="osBar"></div></div>
+            <p id="osText">Menyiapkan sistem operasi...</p>
+        </div>
+
+        <div class="screen login" id="login">
+            <h2>Selamat Datang</h2>
+            <p>Sistem siap digunakan. Silakan login.</p>
+        </div>
+
+        <div class="explanation" id="explain">
+            <h3>WELLCOME </h3>
+            <p>Klik tombol <b>Mulai Simulasi</b> untuk melihat proses booting komputer secara bertahap.</p>
+        </div>
+
+        <div class="controls">
+            <button class="btn-primary" id="start">Start Simulasi</button>
+            <button class="btn-success" id="next" disabled>Langkah Berikutnya</button>
+            <button class="btn-secondary" id="reset">Ulangi</button>
+        </div>
+
+    </div>
+</div>
+
+<footer>
+    <p>© 2023 Simulasi Booting Komputer | Media Pembelajaran Interaktif</p>
+</footer>
+
+<script>
+    const screens = ["bios","post","os","login"];
+    const steps = ["s1","s2","s3","s4"];
+    let step = 0;
+
+    const explainText = [
+        "BIOS adalah sistem dasar yang pertama kali berjalan untuk mengenali perangkat keras komputer.",
+        "POST memeriksa seluruh komponen untuk memastikan semuanya berfungsi dengan baik.",
+        "Sistem operasi dimuat ke memori dan menyiapkan layanan penting.",
+        "Layar login menandakan komputer siap digunakan."
+    ];
+
+    document.getElementById("start").onclick = () => {
+        step = 1;
+        showStep();
+        document.getElementById("next").disabled = false;
+        document.getElementById("start").disabled = true;
+    };
+
+    document.getElementById("next").onclick = () => {
+        if(step < 4){
+            step++;
+            showStep();
+        }
+        if(step === 4) document.getElementById("next").disabled = true;
+    };
+
+    document.getElementById("reset").onclick = () => location.reload();
+
+    function showStep(){
+        document.querySelectorAll(".screen").forEach(s => s.style.display="none");
+        document.getElementById(screens[step-1]).style.display="flex";
+
+        steps.forEach((id,i)=>{
+            document.getElementById(id).className = "step" +
+            (i < step-1 ? " completed" : i === step-1 ? " active" : "");
+        });
+
+        document.getElementById("explain").innerHTML =
+        `<h3>Tahap ${step}</h3><p>${explainText[step-1]}</p>`;
+
+        if(step === 1) document.getElementById("biosBar").style.width="100%";
+        if(step === 3) document.getElementById("osBar").style.width="100%";
+    }
+</script>
+
+</body>
+</html>
